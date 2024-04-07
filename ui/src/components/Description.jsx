@@ -144,12 +144,12 @@ export default function Description() {
                                             <p>• Tìm theo tên sách, tên tác giả, năm xuất bản hoặc theo mã nội dung DDC.</p>
                                             <div className="project img d-flex justify-content-center align-items-end" style={{ backgroundImage: 'url(https://thuvienhoidonggiammucvietnam.org/images/docgia4.png)' }}>
                                             </div>
-                                            <p>Độc giả nhấn vào tên sách (tựa sách) muốn đọc.Thư Viện sẽ chuyển đến trang “Thông tin sách”.<hr />Ví dụ: sách có tên “A Brief History of Christianity”.<hr />Trang sẽ hiện ra các thông tin quyển sách và nút “ĐĂNG KÝ ĐỌC TÁC PHẨM” như sau:</p>
+                                            <p>Độc giả nhấn vào tên sách (tựa sách) muốn đọc.Thư Viện sẽ chuyển đến trang “Thông tin sách”.<br />Ví dụ: sách có tên “A Brief History of Christianity”.<br />Trang sẽ hiện ra các thông tin quyển sách và nút “ĐĂNG KÝ ĐỌC TÁC PHẨM” như sau:</p>
                                             <div className="project img d-flex justify-content-center align-items-end" style={{ backgroundImage: 'url(https://thuvienhoidonggiammucvietnam.org/images/docgia6.png)' }}>
 
                                             </div>
                                             <p className="thongbaohd">Bước 3: Nhấn nút “ĐĂNG KÝ ĐỌC TÁC PHẨM”</p>
-                                            <p>Sau khi đăng ký thành công sẽ hiện thông báo:<hr />“Đăng ký đọc sách thành công, xin kiểm tra email.”</p>
+                                            <p>Sau khi đăng ký thành công sẽ hiện thông báo:<br />“Đăng ký đọc sách thành công, xin kiểm tra email.”</p>
                                             <div className="project img d-flex justify-content-center align-items-end" style={{ backgroundImage: 'url(https://thuvienhoidonggiammucvietnam.org/images/docgia7.png)' }}>
                                             </div>
                                             <p>Thư Viện sẽ tự động gởi đường link sách đã chọn đến email đăng ký của độc giả.</p>

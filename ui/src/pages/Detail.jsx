@@ -1,24 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import arrow from "../images/angle-left.png";
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useLocation } from 'react-router-dom';
 import * as BookService from '../services/BookService';
+import * as RentService from '../services/RentService';
 import Loading from '../components/Loading';
+import { useSelector } from "react-redux";
+import * as message from '../components/Message';
+import { DatePicker, Space } from 'antd';
 
 export default function Detail() {
+    const user = useSelector(state => state.user);
     const location = useLocation();
     const id = location.pathname.split('/')[2];
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [selectedStartDate, setSelectedStartDate] = useState(null); // Ngày bắt đầu thuê
+    const [selectedEndDate, setSelectedEndDate] = useState(null); // Ngày kết thúc thuê
+    const { RangePicker } = DatePicker;
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true); 
             try {
                 const res = await BookService.getDetailsBook(id);
-                console.log('res:', res)
                 setBooks(res.data);
             } catch (error) {
                 console.error('Error fetching product details:', error);
@@ -29,9 +37,32 @@ export default function Detail() {
         fetchData();
     }, [id]);
 
-    const handleClick = () => {
-
-    }
+    const handleClick = async () => {
+        if (selectedStartDate && selectedEndDate) { 
+            if (user?.access_token) {
+                try {
+                    const data = {
+                        userId: user.id, 
+                        bookId: id, 
+                        startDate: selectedStartDate.format("YYYY-MM-DD"),
+                        endDate: selectedEndDate.format("YYYY-MM-DD"), // Sử dụng ngày kết thúc do người dùng chọn
+                        rentStatus: 'Đang xử lý' 
+                    };
+    
+                    await RentService.createRent(data);
+                    message.success('Bạn đã đăng ký thành công! Hãy kiểm tra trong email của bạn');
+                } catch (error) {
+                    console.error('Error creating rent:', error);
+                    message.error('Đã xảy ra lỗi khi đăng ký sách. Vui lòng thử lại sau.');
+                }
+            } else {
+                navigate('/sign-in');
+                message.error('Xin chào! Để đăng ký, bạn phải có và đăng nhập tài khoản thành viên!');
+            }
+        } else {
+            message.error('Vui lòng chọn ngày bắt đầu và kết thúc thuê sách!');
+        }
+    };
     
     return (
         <Loading isLoading={loading}>
@@ -56,16 +87,26 @@ export default function Detail() {
                                     <div className="d-flex"><span><label className="labelsach">Ngôn ngữ</label></span> <span><label id="lngonngu" className="labelsach_">Tiếng Việt</label></span></div>
                                     <div className="d-flex"><span><label className="labelsach">Nguồn</label></span> <span><label id="lthuvien" className="labelsach_">Thư viện HĐGM Việt Nam</label></span></div>
                                     <div className="d-flex"><span></span> <span><label id="lquyentruycap" className="labelsach_" hidden="hidden">Liên hệ phòng đọc sách thư viện. Địa chỉ: 12 Trần Quốc Toản Phường 8, Quận 3, TP.HCM</label></span></div>
-                                    <Link id="afile_pdf" to="/Thongtinsach/DangkySach?masach=104555" className="form-submit" onClick={handleClick}>Đăng ký đọc tác phẩm</Link>
+                                    <Space direction="vertical" size={10}>
+                                        <RangePicker
+                                            style={{padding: '9px'}}
+                                            format="DD-MM-YYYY"
+                                            onChange={(dates) => {
+                                                setSelectedStartDate(dates ? dates[0] : null);
+                                                setSelectedEndDate(dates ? dates[1] : null);
+                                            }}
+                                        />
+                                        <a id="afile_pdf" className="form-submit" onClick={handleClick}>Đăng ký đọc tác phẩm</a>
+                                    </Space>
                                 </div>
                             </div>     
                             <div className="col-sm-3" style={{ backgroundColor: '#ebe9f9', paddingLeft: '10px' }}>
 
                             </div>
                         </div>
-                        <Link to="/chude" id="atrove"><img src={{arrow}} alt="" /></Link>
+                        <Link to="/book" id="atrove"><img src={arrow} alt="" /></Link>
                     </div>
-                </section>
+                </section>  
                 <Footer />
             </>
         </Loading>

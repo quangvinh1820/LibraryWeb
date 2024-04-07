@@ -18,15 +18,14 @@ export default function BookPage() {
         total: 1,
     });
 
-    const fetchData = async (page, limit) => {
+    const fetchData = async (page, limit, search) => {
         setLoading(true);
         try {
-            const res = await BookService.getAllBook('', limit, page);
+            const res = await BookService.getAllBook(search || null, limit, page);
             if (res) {
                 setBooks(res.data);
                 setPagination({
                     ...pagination,
-                    // totalPage: res.totalPage,
                     total: res.total
                 });
             }

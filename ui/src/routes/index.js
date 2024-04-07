@@ -9,6 +9,7 @@ import AuthorPage from "../pages/Author";
 import ChudePage from "../pages/Chude";
 import SortChudePage from "../pages/SortChude";
 import BookAuthorPage from "../pages/BookAuthor";
+import RentedPage from "../pages/RentedPage";
 
 export const routes = [
     {
@@ -16,11 +17,11 @@ export const routes = [
         page: HomePage
     },
     {
-        path: '/login',
+        path: '/sign-in',
         page: LoginPage
     },
     {
-        path: '/register',
+        path: '/sign-up',
         page: RegisterPage
     },
     {
@@ -54,6 +55,10 @@ export const routes = [
     {
         path: '/contact',
         page: ContactPage
+    },
+    {
+        path: '/rented-book',
+        page: RentedPage
     },
 ]
     

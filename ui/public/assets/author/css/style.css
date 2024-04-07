@@ -9392,11 +9392,15 @@ textarea.form-control {
     height: 33px;
     font-size: 14px;
     border-radius: 5px;
-    background:none
+    background:none;
+    margin-right: 3px;
 }
 
 .search-container {
-    margin-top: 10px;}
+    margin-top: 10px;
+    position: relative;
+  }
+    
 #diemsach {
     height:350px;}
 #diemsach{

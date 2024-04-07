@@ -3,9 +3,17 @@ import axios from 'axios';
 export const getAllBook = async (search, limit, page) => {
     let res = {};
     if (search?.length > 0) {
-        res = await axios.get(`${process.env.REACT_APP_API_URL}/book/get-all?filter=name&filter=${search}&limit=${limit}`);
+        res = await axios.get(`${process.env.REACT_APP_API_URL}/book/get-all?filter=TenTacPham&filter=${search}&limit=${limit}`);
     } else {
         res = await axios.get(`${process.env.REACT_APP_API_URL}/book/get-all?limit=${limit}&page=${page}`);
+    }
+    return res.data;
+};
+
+export const getSearchBook = async (type, search, limit) => {
+    let res = {};
+    if (search?.length > 0) {
+        res = await axios.get(`${process.env.REACT_APP_API_URL}/book/get-all?filter=${type}&filter=${search}&limit=${limit}`);
     }
     return res.data;
 };

@@ -1,5 +1,71 @@
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import * as UserService from '../services/UserService';
+import { resetUser } from '../redux/userRedux';
+import * as BookService from '../services/BookService';
+import { useDebounce } from '../hooks/useDebounce'
+
 const Navbar = () => {
+    const user = useSelector(state => state.user);
+    const [loading, setLoading] = useState(false);
+    const [userName, setUserName] = useState('');
+    const [type, setType] = useState('TenTacPham');
+    const [searchResults, setSearchResults] = useState([]);
+    const [searchInput, setSearchInput] = useState('');
+    const [searchProperty, setSearchProperty] = useState('TenTacPham'); // Biến trung gian lưu trữ tên thuộc tính cần trả về
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        setLoading(true);
+        setUserName(user?.TenNguoiDung);
+        setLoading(false);
+    }, [user?.TenNguoiDung]);
+
+    const searchDebounce = useDebounce(searchInput, 500)
+
+    useEffect(() => {
+        const searchBooks = async () => {
+            try {
+                setLoading(true);
+                const results = await BookService.getSearchBook(type, searchDebounce, 10);
+                console.log('data:', results)
+                setSearchResults(results);
+                setSearchProperty(type)
+            } catch (error) {
+                console.error('Error fetching search results:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        searchBooks();
+    }, [type, searchDebounce]);
+
+    console.log('searchResults', searchResults?.data)
+
+    const handleNavigateLogin = () => {
+        navigate('/sign-in');
+    };
+
+    const handleLogout = async () => {
+        setLoading(true);
+        await UserService.logoutUser();
+        dispatch(resetUser());
+        navigate('/');
+        setLoading(false);
+    };
+
+    const handleNavigateDetail = (result) => {
+        if(type === 'TenTacGia') {
+            navigate(`/book-author/${result.TenTacGia}`)
+        } else if (type === 'TenTacPham') {
+            navigate(`/book-details/${result._id}`)
+        } else if (type === 'DDC') {
+            navigate(`/chude/${result.DDC}`)
+        }
+    }
+
     return (
         <nav className="navbar navbar-expand-lg navbar-dark ftco_navbar ftco-navbar-light site-navbar-target" id="ftco-navbar">
             <div className="container-fluid">
@@ -17,26 +83,58 @@ const Navbar = () => {
                         <li className="nav-item"><Link to="/contact" className="nav-link"><span>Liên hệ</span></Link></li>
                         <li className="nav-item">
                             <div className="search-container">
-                                <form method="get" action="/Home/Search">
-                                    <select name="chon" id="chon">
-                                        <option value="0">Tìm sách</option>
-                                        <option value="1">Tác giả</option>
-                                        <option value="2">Nhà XB</option>
-                                        <option value="3">Năm XB</option>
-                                        <option value="4">Mã DDC</option>
-                                    </select>
-                                    <input type="search" required placeholder="tên sách..." name="txtkeyword" id="txtkeyword" />
-                                    <button
-                                        className="btntim"
-                                        type="submit"
-                                        tooltip="Từ khóa: tên sách, tên tác giả, mã ddc, tên nhà xuất bản, tên thư viện ..."
-                                    >
-                                        <i className="fa fa-search"></i>
-                                    </button>
-                                </form>
+                                <select id="chon" value={type} onChange={(e) => setType(e.target.value)}>
+                                    <option value="TenTacPham">Tìm sách</option>
+                                    <option value="TenTacGia">Tác giả</option>
+                                    <option value="DDC">Mã DDC</option>
+                                </select>
+                                <input
+                                    type="search" 
+                                    placeholder="tên sách..." 
+                                    id="txtkeyword" 
+                                    value={searchInput}
+                                    onChange={(e) => setSearchInput(e.target.value)}
+                                />
+                                <ul class="ui-menu ui-widget ui-widget-content ui-autocomplete ui-front" style={{top: "40px", left: "0px", width: "100%", border: "none"}}>
+                                    {searchResults?.data?.map((result) => (
+                                    <li class="ui-menu-item" key={result._id}>
+                                        <a id="ui-id-42" className="ui-menu-item-wrapper ui-state-active" onClick={() => handleNavigateDetail(result)}>
+                                            {result[searchProperty]}
+                                        </a>
+                                    </li>
+                                    ))}
+                                </ul>
+                                <button
+                                    className="btntim"
+                                    type="submit"
+                                >
+                                    <i className="fa fa-search"></i>
+                                </button>
                             </div>
-                        </li>
-                        <li className="nav-item"><Link to="/login" className="nav-link"><span>Đăng nhập</span></Link></li>
+                        </li> 
+                        {user?.access_token ? (
+                            <>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to='/rented-book'>
+                                        <span>
+                                            Chào {userName?.length ? userName : user?.Email}!
+                                        </span>
+                                    </Link>
+                                </li>
+                                <li className="nav-item" onClick={handleLogout}>
+                                    <a className="nav-link">
+                                        <span>Thoát</span>
+                                    </a>
+                                </li>
+                                {/* <ul>
+                                    {user?.isAdmin && (
+                                        <>
+                                            <li><Link to="/admin/orders">Manage system</Link></li>
+                                        </>
+                                    )}
+                                </ul> */}
+                            </>
+                        ) : <li className="nav-item"><a onClick={handleNavigateLogin} className="nav-link"><span>Đăng nhập</span></a></li>}
                     </ul>
                 </div>
             </div>           

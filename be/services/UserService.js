@@ -20,7 +20,7 @@ const createUser = async (newUser) => {
                 return reject({ status: 'ERR', message: 'The email is already' });
             }
 
-            const hash = bcrypt.hashSync(password, 10);
+            const hash = bcrypt.hashSync(MatKhau, 10);
             const createdUser = await User.create({ TenNguoiDung, Email, MatKhau: hash, DienThoai });
 
             if (createdUser) {
@@ -35,10 +35,10 @@ const createUser = async (newUser) => {
 const loginUser = (userLogin) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const { email, password } = userLogin
+            const { Email, MatKhau } = userLogin
             const reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
-            const isCheckEmail = reg.test(email)
-            if (!email || !password) {
+            const isCheckEmail = reg.test(Email)
+            if (!Email || !MatKhau) {
                 return reject({
                     status: 'ERR',
                     message: 'The input is required'
@@ -50,7 +50,7 @@ const loginUser = (userLogin) => {
                 })
             }
             const checkUser = await User.findOne({
-                email: email
+                Email: Email
             })
             if (checkUser === null) {
                 return reject({
@@ -58,7 +58,7 @@ const loginUser = (userLogin) => {
                     message: 'The user is not defined'
                 })
             }
-            const comparePassword = bcrypt.compareSync(password, checkUser.password)
+            const comparePassword = bcrypt.compareSync(MatKhau, checkUser.MatKhau)
 
             if (!comparePassword) {
                 return reject({

@@ -1,77 +1,158 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import logo from "../images/icon.png";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import left from "../images/angle-left.png";
+import { useMutationHooks } from '../hooks/useMutationHook';
+import * as UserService from '../services/UserService';
+import * as message from '../components/Message';
+import Loading from "../components/Loading";
 
 export default function Register() {
-  return (
-    <>
-      <Navbar />
-      <section className="ftco-section contact-section ftco-no-pb" id="contact-section">
-        <div className="container" style={{ background: '#fff', width: '1000px' }}>
-          <div className="signup-content" style={{ paddingBottom: '10px', paddingTop: '20px' }} id="signup-content">
-            <div className="signup-form">
-              <div>
-                <input name="__RequestVerificationToken" type="hidden" />
-                <div className="register-form" id="register-form">
-                  <div className="form-group">
-                    <label className='label_input' htmlFor="name"><i className="zmdi zmdi-account material-icons-name"></i></label>
-                    <input className="inputlogin text-box single-line" data-val="true" data-val-length="Số ký tự tối đa 200!" data-val-length-max="200" data-val-required="Bạn chưa nhập dữ liệu!" id="Username" name="Username" placeholder="Họ tên" required="required" type="text" value="" />
-                    <span className="field-validation-valid text-danger" data-valmsg-for="Username" data-valmsg-replace="true"></span>
-                  </div>
-                  <div className="form-group">
-                    <label className='label_input' htmlFor="email"><i className="zmdi zmdi-email"></i></label>
-                    <input className="inputlogin text-box single-line" data-val="true" data-val-length="Số ký tự tối đa 200!" data-val-length-max="200" data-val-required="Bạn chưa nhập dữ liệu!" id="Email" name="Email" placeholder="Email" required="required" type="text" value="" />
-                    <span className="field-validation-valid text-danger" data-valmsg-for="Email" data-valmsg-replace="true"></span>
-                  </div>
-                  <div className="form-group">
-                    <label className='label_input' htmlFor="pass"><i className="zmdi zmdi-lock"></i></label>
-                    <input className="inputlogin text-box single-line" data-val="true" data-val-length="Số ký tự tối đa 100!" data-val-length-max="100" data-val-required="Bạn chưa nhập dữ liệu!" id="Password" name="Password" placeholder="Mật khẩu" required="required" type="password" value="" />
-                    <span className="field-validation-valid text-danger" data-valmsg-for="Password" data-valmsg-replace="true"></span>
-                  </div>
-                  <div className="form-group">
-                    <label className='label_input' htmlFor="re-pass"><i className="zmdi zmdi-lock-outline"></i></label>
-                    <input className="inputlogin text-box single-line" data-val="true" data-val-length="Số ký tự tối đa 100!" data-val-length-max="100" id="rePassword" name="rePassword" placeholder="Nhập lại mật khẩu" required="required" type="password" value="" />
-                    <span className="field-validation-valid text-danger" data-valmsg-for="rePassword" data-valmsg-replace="true"></span>
-                  </div>
-                  <div className="form-group">
-                    <input checked="checked" data-val="true" data-val-required="The Cam kết field is required." id="dongy" name="dongy" type="checkbox" value="true" /><input name="dongy" type="hidden" value="false" />
-                    <label htmlFor="agree-term" className="label-agree-term label_input" id="dongy"><span><span></span></span>Tôi đồng ý tất cả <Link className="camket" to="/Docgia/Gioithieu">Cam kết và thỏa thuận</Link></label>
-                  </div>
-                  <div className="form-group" hidden="hidden">
-                    <input
-                    className="form-control text-box single-line"
-                    data-val="true"
-                    data-val-number="The field Quyền truy cập must be a number."
-                    id="quyentruycap"
-                    name="quyentruycap"
-                    type="number"
-                    value="" />
-                  </div>
-                  <div className="form-group form-button">
-                    <button
-                    className="form-submit"
-                    style={{ border: 'none', marginTop: '0' }}
-                    id="btndocgia"
-                    >
-                      Đăng ký
-                    </button>
-                  </div>
+    const navigate = useNavigate();
+    const [isShowPassword, setIsShowPassword] = useState(false);
+    const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
+
+    const [TenNguoiDung, setName] = useState('');
+    const [Email, setEmail] = useState('');
+    const [MatKhau, setPassword] = useState('');
+    const [XacNhanMatKhau, setConfirmPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const mutation = useMutationHooks(
+        data => UserService.signupUser(data)
+    )
+
+    const { data, isPending, isSuccess, isError, error } = mutation
+
+    useEffect(() => {
+        if (isSuccess) {
+        message.success()
+        handleNavigateSignIn()
+        } else if (isError) {
+        message.error();
+        setErrorMessage(error.response.data.error);
+        }
+    }, [isSuccess, isError])
+
+    const handleNavigateSignIn = () => {
+        navigate('/sign-in')
+    }
+
+    const handleSignUp = () => {
+        mutation.mutate({ TenNguoiDung, Email, MatKhau, XacNhanMatKhau })
+    }
+
+    return (
+      <>
+        <Navbar />
+        <section className="ftco-section contact-section ftco-no-pb" id="contact-section">
+            <div className="container" style={{ background: '#fff', width: '1000px' }}>
+                <div className="signup-content" style={{ paddingBottom: '10px', paddingTop: '20px' }} id="signup-content">
+                    <div className="signup-form">
+                        <div>
+                            <div className="register-form" id="register-form">
+                                <div className="form-group">
+                                    <label className='label_input'><i className="fa fa-user"></i></label>
+                                    <input 
+                                    className="inputlogin text-box single-line" 
+                                    id="Username" 
+                                    placeholder="Họ tên" 
+                                    type="text"
+                                    value={TenNguoiDung} 
+                                    onChange={(e) => setName(e.target.value)} />
+                                </div>
+                                <div className="form-group">
+                                    <label className='label_input'><i className="fa fa-envelope"></i></label>
+                                    <input 
+                                    className="inputlogin text-box single-line"
+                                    id="Email"
+                                    placeholder="Email"
+                                    type="text" 
+                                    value={Email}
+                                    onChange={(e) => setEmail(e.target.value)} />
+                                </div>
+                                <div className="form-group" style={{position: "relative"}}>
+                                    <label className='label_input'><i className="fa fa-lock"></i></label>
+                                    <input 
+                                    className="inputlogin text-box single-line" 
+                                    id="Password"
+                                    placeholder="Mật khẩu"
+                                    type={isShowPassword ? "text" : "password"} 
+                                    value={MatKhau}
+                                    onChange={(e) => setPassword(e.target.value)} />
+                                    <span
+                                        onClick={() => setIsShowPassword(!isShowPassword)}
+                                        style={{
+                                            zIndex: 10,
+                                            position: 'absolute',
+                                            top: '2px',
+                                            right: '8px'
+                                        }}>
+                                            {
+                                                isShowPassword ? (
+                                                    <VisibilityIcon style={{fontSize: '18px', color: 'black'}} />
+                                                    ) : (
+                                                    <VisibilityOffIcon style={{fontSize: '18px', color: 'black'}} />
+                                                )
+                                            }
+                                    </span>
+                                </div>
+                                <div className="form-group" style={{position: "relative"}}>
+                                    <label className='label_input'><i className="fa fa-unlock"></i></label>
+                                    <input 
+                                    className="inputlogin text-box single-line" 
+                                    placeholder="Nhập lại mật khẩu"
+                                    type={isShowConfirmPassword ? "text" : "password"} 
+                                    value={XacNhanMatKhau}
+                                    onChange={(e) => setConfirmPassword(e.target.value)} />
+                                    <span
+                                        onClick={() => setIsShowConfirmPassword(!isShowConfirmPassword)}
+                                        style={{
+                                            zIndex: 10,
+                                            position: 'absolute',
+                                            top: '2px',
+                                            right: '8px'
+                                        }}>
+                                            {
+                                                isShowConfirmPassword ? (
+                                                    <VisibilityIcon style={{fontSize: '18px', color: 'black'}} />
+                                                    ) : (
+                                                    <VisibilityOffIcon style={{fontSize: '18px', color: 'black'}} />
+                                                )
+                                            }
+                                    </span>
+                                </div>
+                                {errorMessage && <span style={{ color: 'red' }}>{errorMessage}</span>}
+                                <div className="form-group form-button">
+                                    <Loading isLoading={isPending}>
+                                        <button
+                                            disabled={!Email.length || !MatKhau.length || !XacNhanMatKhau.length}
+                                            className="form-submit"
+                                            id='btndocgia'
+                                            style={{ border: 'none', marginTop: '0' }}
+                                            onClick={handleSignUp}
+                                        >
+                                            Đăng ký
+                                        </button>
+                                    </Loading>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="signup-image">
+                        <h2 id="dangkydocgia" className="signup-image-link">Đăng ký độc giả</h2>
+                        <figure><img src={logo} alt="sing up image" /></figure>
+                        <Link id="atv" className="signup-image-link" to="/Home/Index">Thư viện HĐGM Việt Nam</Link>
+                        <Link to="/sign-in" className="signup-image-link">Tôi đã có tài khoản</Link>
+                    </div>
                 </div>
-              </div>
             </div>
-            <div className="signup-image">
-              <h2 id="dangkydocgia" className="signup-image-link">Đăng ký độc giả</h2>
-              <figure><img src={logo} alt="sing up image" /></figure>
-              <Link id="atv" className="signup-image-link" to="/Home/Index">Thư viện HĐGM Việt Nam</Link>
-              <Link to="/login" className="signup-image-link">Tôi đã có tài khoản</Link>
-            </div>
-          </div>
-        </div>
-      </section>
-      <Footer />
-    </>
-  )
+        </section>
+        <Footer />
+      </>
+    )
 }
