@@ -10280,3 +10280,63 @@ textarea.form-control {
         display: flex;
         justify-content: center;
       } */
+
+.update-form button {
+  background-color: #007bff; 
+  color: #fff; 
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px; 
+  cursor: pointer; 
+  margin-right: 10px; 
+}
+
+.update-form button:hover {
+  background-color: #0056b3;
+}
+
+
+.update-form {
+  position: fixed;
+  top: 50%;
+  left: 50%; 
+  transform: translate(-50%, -50%); 
+  background-color: #fff; 
+  padding: 20px; 
+  border: 1px solid #007bff; 
+  border-radius: 5px; 
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
+  z-index: 9999;
+}
+
+
+/* .overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); 
+  z-index: 9998;
+} */
+
+.close-btn {
+  background: none;
+  border: none;
+  padding: 0!important;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+}
+
+.close-btn i {
+  font-size: 1rem;
+  color: #000;
+}
+
+.close-btn:hover i {
+  color: #ff0000; /* Màu đỏ khi hover */
+}
+
+    

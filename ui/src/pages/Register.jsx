@@ -18,6 +18,7 @@ export default function Register() {
 
     const [TenNguoiDung, setName] = useState('');
     const [Email, setEmail] = useState('');
+    const [DienThoai, setDienThoai] = useState('');
     const [MatKhau, setPassword] = useState('');
     const [XacNhanMatKhau, setConfirmPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -43,7 +44,7 @@ export default function Register() {
     }
 
     const handleSignUp = () => {
-        mutation.mutate({ TenNguoiDung, Email, MatKhau, XacNhanMatKhau })
+        mutation.mutate({ TenNguoiDung, Email, DienThoai, MatKhau, XacNhanMatKhau })
     }
 
     return (
@@ -74,6 +75,16 @@ export default function Register() {
                                     type="text" 
                                     value={Email}
                                     onChange={(e) => setEmail(e.target.value)} />
+                                </div>
+                                <div className="form-group">
+                                    <label className='label_input'><i className="fa fa-phone"></i></label>
+                                    <input 
+                                    className="inputlogin text-box single-line"
+                                    id="DienThoai"
+                                    placeholder="Số điện thoại"
+                                    type="text" 
+                                    value={DienThoai}
+                                    onChange={(e) => setDienThoai(e.target.value)} />
                                 </div>
                                 <div className="form-group" style={{position: "relative"}}>
                                     <label className='label_input'><i className="fa fa-lock"></i></label>

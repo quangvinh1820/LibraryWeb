@@ -114,25 +114,27 @@ const Navbar = () => {
                         </li> 
                         {user?.access_token ? (
                             <>
-                                <li className="nav-item">
-                                    <Link className="nav-link" to='/rented-book'>
-                                        <span>
-                                            Chào {userName?.length ? userName : user?.Email}!
-                                        </span>
-                                    </Link>
-                                </li>
+                                {user?.isAdmin ? ( 
+                                    <li className="nav-item">
+                                        <Link className="nav-link" to='/rented-book'>
+                                            <span>
+                                                Chào {userName?.length ? userName : user?.Email}!
+                                            </span>
+                                        </Link>
+                                    </li>) : (
+                                    <li className="nav-item">
+                                        <a className="nav-link">
+                                            <span>
+                                                Chào {userName?.length ? userName : user?.Email}!
+                                            </span>
+                                        </a>
+                                    </li>
+                                )}                                
                                 <li className="nav-item" onClick={handleLogout}>
                                     <a className="nav-link">
                                         <span>Thoát</span>
                                     </a>
                                 </li>
-                                {/* <ul>
-                                    {user?.isAdmin && (
-                                        <>
-                                            <li><Link to="/admin/orders">Manage system</Link></li>
-                                        </>
-                                    )}
-                                </ul> */}
                             </>
                         ) : <li className="nav-item"><a onClick={handleNavigateLogin} className="nav-link"><span>Đăng nhập</span></a></li>}
                     </ul>

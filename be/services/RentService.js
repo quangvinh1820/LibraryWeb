@@ -53,11 +53,11 @@ const updateRentStatus = (id, data) => {
     })
 }
 
-const getRentDetails = (userId) => {
+const getRentDetails = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const rentedBooks = await Rent.find({ userId })
-                .populate('userId', 'TenNguoiDung')
+            const rentedBooks = await Rent.find()
+                .populate('userId', 'TenNguoiDung Email')
                 .populate('bookId', 'TenTacPham');
             if (!rentedBooks) {
                 throw new Error('Đơn thuê sách không tồn tại');

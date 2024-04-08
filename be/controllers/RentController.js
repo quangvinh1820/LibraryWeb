@@ -33,9 +33,7 @@ const updateRentStatus = async (req, res) => {
 
 const getRentDetails = async (req, res) => {
     try {
-        const userId = req.user.id;
-        const response = await RentService.getRentDetails(userId);
-
+        const response = await RentService.getRentDetails();
         return res.status(200).json(response);
     } catch (e) {
         return res.status(404).json({

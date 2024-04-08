@@ -5,10 +5,15 @@ export const createRent = async (data) => {
     return res.data;
 };
 
-export const getRentDetails = async (id) => {
+export const getRentDetails = async () => {
     const res = await axios.get(`${process.env.REACT_APP_API_URL}/rent/get-rent-details`)
     return res.data
 }
+
+export const updateRent = async (id, data) => {
+    const res = await axios.put(`${process.env.REACT_APP_API_URL}/rent/update/${id}`, data);
+    return res.data;
+};
 
 // export const deleteRent = async (id) => {
 //     const res = await axiosJWT.delete(`${process.env.REACT_APP_API_URL}/rent/delete/${id}`)
